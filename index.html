@@ -17,27 +17,44 @@
 <body>
     <h1>こんにちは！Azure Static Web Apps 🎉</h1>
     <p>これは VS Code で作った最初の静的アプリです。</p>
-    <button onclick="callApi()">Call Azure Function</button>
-<p id="result"></p>
+ <h2>名前を登録</h2>
+<input id="name" placeholder="名前">
+<button onclick="send()">登録</button>
+
+<h2>登録済みデータ</h2>
+<button onclick="load()">再読み込み</button>
+<ul id="list"></ul>
 
 <script>
-async function callApi() {
-    const url = "https://fxt-test-func-argfg8g2aycjg4he.eastasia-01.azurewebsites.net/api/Function1";
+const apiBase = "https://<your-function-app>.azurewebsites.net/api";
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error("HTTP error " + response.status);
-        }
+async function send() {
+    const name = document.getElementById("name").value;
 
-        const text = await response.text();
-        document.getElementById("result").innerText = text;
+    await fetch(`${apiBase}/InsertData`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+    });
 
-    } catch (err) {
-        console.error(err);
-        document.getElementById("result").innerText = "Error: " + err.message;
-    }
+    alert("登録しました！");
+    load();
+}
+
+async function load() {
+    const res = await fetch(`${apiBase}/GetData`);
+    const data = await res.json();
+
+    const ul = document.getElementById("list");
+    ul.innerHTML = "";
+
+    data.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.Id}: ${item.Name} (${item.CreatedAt})`;
+        ul.appendChild(li);
+    });
 }
 </script>
+
 </body>
 </html>
