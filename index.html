@@ -17,5 +17,27 @@
 <body>
     <h1>こんにちは！Azure Static Web Apps 🎉</h1>
     <p>これは VS Code で作った最初の静的アプリです。</p>
+    <button onclick="callApi()">Call Azure Function</button>
+<p id="result"></p>
+
+<script>
+async function callApi() {
+    const url = "https://fxt-test-func-argfg8g2aycjg4he.eastasia-01.azurewebsites.net/api/Function1";
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+        }
+
+        const text = await response.text();
+        document.getElementById("result").innerText = text;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("result").innerText = "Error: " + err.message;
+    }
+}
+</script>
 </body>
 </html>
