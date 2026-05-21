@@ -76,14 +76,16 @@ async function checkUser() {
     const res = await fetch("/.auth/me");
     const data = await res.json();
 
-    if (data.length > 0) {
-        const user = data[0];
+    if (data && data.clientPrincipal) {
+        const user = data.clientPrincipal; //ユーザ情報を取り出す
         document.getElementById("before-login").style.display = "none";
         document.getElementById("after-login").style.display = "block";
         document.getElementById("welcome").innerText =
             `こんにちは、${user.userDetails} さん！`;
     } else {
         console.log("未ログイン");
+        document.getElementById("before-login").style.display = "block";
+        document.getElementById("after-login").style.display = "none";
     }
 }
 
