@@ -16,7 +16,14 @@
 </head>
 <body>
     <h1>こんにちは！Azure Static Web Apps 🎉</h1>
-    <p>これは VS Code で作った最初の静的アプリです。</p>
+    <p>
+        <button onclick="login()">Microsoftでログイン</button></p>
+
+    <div id="after-login" style="display:none;">
+        <h1 id="welcome"></h1>
+        <button onclick="logout()">ログアウト</button>
+    </div>
+
  <h2>名前を登録</h2>
 <input id="name" placeholder="名前">
 <button onclick="send()">登録</button>
@@ -26,7 +33,28 @@
 <ul id="list"></ul>
 
 <script>
+
+function login() {
+    window.location.href = "/.auth/login/aad";
+}
+
+function logout() {
+    window.location.href = "/.auth/logout";
+}
 const apiBase = "https://fxt-test-func-argfg8g2aycjg4he.eastasia-01.azurewebsites.net/api";
+
+async function checkUser() {
+    const res = await fetch("/.auth/me");
+    const data = await res.json();
+
+    if (data.length > 0) {
+        const user = data[0];
+        document.getElementById("before-login").style.display = "none";
+        document.getElementById("after-login").style.display = "block";
+        document.getElementById("welcome").innerText =
+            `こんにちは、${user.userDetails} さん！`;
+    }
+}
 
 async function send() {
     const name = document.getElementById("name").value;
@@ -54,6 +82,8 @@ async function load() {
         ul.appendChild(li);
     });
 }
+
+checkUser();
 </script>
 
 </body>
