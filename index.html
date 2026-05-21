@@ -34,7 +34,7 @@ async function send() {
     await fetch(`${apiBase}/InsertData`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ Name: name })
     });
 
     alert("登録しました！");
