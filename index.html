@@ -16,9 +16,10 @@
 </head>
 <body>
     <h1>こんにちは！Azure Static Web Apps 🎉</h1>
-    <p>
-        <button onclick="login()">Microsoftでログイン</button></p>
 
+    <div id="before-login">
+        <button onclick="login()">Microsoftでログイン</button></p>
+    </div>
     <div id="after-login" style="display:none;">
         <h1 id="welcome"></h1>
         <button onclick="logout()">ログアウト</button>
@@ -43,18 +44,7 @@ function logout() {
 }
 const apiBase = "https://fxt-test-func-argfg8g2aycjg4he.eastasia-01.azurewebsites.net/api";
 
-async function checkUser() {
-    const res = await fetch("/.auth/me");
-    const data = await res.json();
 
-    if (data.length > 0) {
-        const user = data[0];
-        document.getElementById("before-login").style.display = "none";
-        document.getElementById("after-login").style.display = "block";
-        document.getElementById("welcome").innerText =
-            `こんにちは、${user.userDetails} さん！`;
-    }
-}
 
 async function send() {
     const name = document.getElementById("name").value;
@@ -82,8 +72,23 @@ async function load() {
         ul.appendChild(li);
     });
 }
+async function checkUser() {
+    const res = await fetch("/.auth/me");
+    const data = await res.json();
 
-checkUser();
+    if (data.length > 0) {
+        const user = data[0];
+        document.getElementById("before-login").style.display = "none";
+        document.getElementById("after-login").style.display = "block";
+        document.getElementById("welcome").innerText =
+            `こんにちは、${user.userDetails} さん！`;
+    } else {
+        console.log("未ログイン");
+    }
+}
+
+// ★ ログイン直後の Cookie 反映待ち
+setTimeout(checkUser, 300);
 </script>
 
 </body>
