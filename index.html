@@ -30,6 +30,11 @@
 <h2>登録済みデータ</h2>
 <button onclick="load()">再読み込み</button>
 <ul id="list"></ul>
+
+<h2>データダウンロード</h2>
+<button id="download">CSVダウンロード</button>
+
+<h2>ログアウト</h2>
         <button onclick="logout()">ログアウト</button>
     </div>
 
@@ -89,6 +94,16 @@ async function checkUser() {
         document.getElementById("after-login").style.display = "none";
     }
 }
+
+document.getElementById("download").addEventListener("click", async () => {
+  const res = await fetch("https://prod-00.eastasia.logic.azure.com:443/workflows/88f138bd92ea4209b79e03c5cd1b1db2/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=w698Yepesl3ITqGjHDIjEsk5WSRiI3Mn0rL0hVqNwsU");
+  const data = await res.json();
+
+  const link = document.createElement("a");
+  link.href = data.downloadUrl;
+  link.download = "report.csv";
+  link.click();
+});
 
 // ★ ログイン直後の Cookie 反映待ち
 setTimeout(checkUser, 300);
